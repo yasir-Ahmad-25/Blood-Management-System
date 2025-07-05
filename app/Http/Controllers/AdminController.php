@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BloodDonations;
 use App\Models\Donors;
 use Auth;
 use Illuminate\Http\Request;
@@ -148,4 +149,66 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Donor deleted successfully');
     }
 
+    public function getDonorBloodType(Request $request){
+        $donorId = $request->input('donorId');
+        $donor = Donors::find($donorId);
+        if (!$donor) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Sorry, Donor not found.',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'blood_type' => $donor->blood_type
+        ]);
+    }
+
+    // Donation Management
+    public function createDonation(){
+        $donors = Donors::orderBy('id', 'desc')->get();
+        $data = [
+            'title' => 'Create Donation',
+            'donors' => $donors,
+        ];
+        return view('admin.create_donation', $data);    
+    }
+
+    public function recordDonation(Request $request){
+        // validate the request
+        $request->validate([
+            'donor' => 'required|exists:donors,id',
+            'volume' => 'required|numeric|min:1',
+            'donation_date' => 'required|date',
+            'location' => 'required|string|max:255',
+        ]);
+
+        // check if validation passes
+        $donationData = [
+            'donor_id' => $request->input('donor'),
+            'volume_ml' => $request->input('volume'),
+            'donation_date' => $request->input('donation_date'),
+            'blood_type' => $request->input('blood_type'),
+            'location' => $request->input('location'),
+            'remarks' => $request->input('remarks', ''),
+        ];
+
+        // Here you would typically save the donation to the database
+
+        $saveDonation = BloodDonations::create($donationData);
+        if( !$saveDonation) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to create donation'
+            ], 500);
+        }
+        
+        // For now, we will just return a success message
+        return response()->json([
+            'status' => true,
+            'message' => 'Donation created successfully',
+            'donation' => $donationData
+        ]);
+    }
 }

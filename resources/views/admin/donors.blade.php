@@ -5,6 +5,7 @@
         <h1>Donors List</h1>
         <span>This is Donors Page</span>
         <a href="{{ route('admin.create_donor')}}" class="btn btn-primary"> Create New Donor </a>
+        <a href="{{ route('admin.create_donation')}}" class="btn btn-primary"> Create Donation </a>
         <hr>
         @if(session('success'))
             <div class="alert alert-success">
