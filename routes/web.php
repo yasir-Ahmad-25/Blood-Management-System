@@ -7,6 +7,13 @@ use Illuminate\Support\Facades\Route;
 // Admin Routes
 Route::middleware('custom.auth')->controller(AdminController::class)->group(function () {
     Route::get('dashboard', 'index')->name('admin.index');
+    Route::get('donors', 'donors')->name('admin.donors');
+    Route::get('create_donor','createDonor')->name('admin.create_donor');
+    Route::post('record_donor','recordDonor')->name('admin.record_donor');
+    Route::get('edit_donor/{id}', 'editDonor')->name('admin.edit_donor');
+    Route::post('update_donor/{id}', 'updateDonor')->name('admin.update_donor');
+    Route::get('delete_donor/{id}', 'deleteDonor')->name('admin.delete_donor');
+    // Add more admin routes as needed
     Route::get('logout', 'logout')->name('admin.logout');
 });
 
