@@ -77,7 +77,7 @@
         $('#create-donation-form').on('submit', function(e){
             e.preventDefault(); // Prevent the default form submission
             
-            // Collect form data
+            // Collect form data 
             var formData = $(this).serialize();
 
             // Send an AJAX POST request

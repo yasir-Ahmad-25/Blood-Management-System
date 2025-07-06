@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\BloodDonations;
 use App\Models\BloodInventory;
+use App\Models\BloodRequest;
 use App\Models\Donors;
+use App\Models\HospitalInventory;
 use App\Models\Hospitals;
 use Auth;
+use DB;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -246,18 +249,27 @@ class AdminController extends Controller
         $donation->where('id', $id)->update(['status' => $donation->status]);
         // record blood inventory
         if ($donation->status === 'approved') {
-            $bloodInventoryData = [
-                'blood_type' => $donation->blood_type,
-                'volume' => $donation->volume_ml / 1000, // Convert ml to liters
-                'donor_id' => $donation->donor_id,
-                'collection_date' => $donation->donation_date,
-                'expiration_date' => now()->addDays(42), // Assuming blood expires in 42 days
-                'status' => 'available',
-            ];
-            BloodInventory::create($bloodInventoryData);
-        }
-        if (!$donation->save()) {
-            return redirect()->back()->with('error', 'Failed to update donation status');
+            // Try to find an existing inventory row for this blood type and available status
+            $existingInventory = BloodInventory::where('blood_type', $donation->blood_type)
+                ->where('status', 'available')
+                ->first();
+
+            if ($existingInventory) {
+                // If found, increment the volume/qty
+                $existingInventory->volume += $donation->volume_ml;
+                $existingInventory->save();
+            } else {
+                // Otherwise, insert new inventory row
+                $bloodInventoryData = [
+                    'blood_type' => $donation->blood_type,
+                    'volume' => $donation->volume_ml,
+                    'donor_id' => $donation->donor_id,
+                    'collection_date' => $donation->donation_date,
+                    'expiration_date' => now()->addDays(42), // Usually 42 days for whole blood
+                    'status' => 'available',
+                ];
+                BloodInventory::create($bloodInventoryData);
+            }
         }
         return redirect()->back()->with('success', 'Donation status updated successfully');
     }
@@ -408,4 +420,90 @@ class AdminController extends Controller
         ]);
         // return redirect()->back()->with('success','Hospital Deleted Successfully');
     }
+
+
+    // Requests Management
+    public function requests_blood(){
+
+        $blood_requests = BloodRequest::join('hospitals','tbl_blood_requests.hospital_id','=','hospitals.id')
+                                        ->select('tbl_blood_requests.*','hospitals.name as Hospital_Name')
+                                        ->orderBy('tbl_blood_requests.request_id','desc')
+                                        ->get();
+        $data = [
+            'title' => 'Blood Requests',
+            'blood_requests' => $blood_requests,
+        ];
+        return view('admin.requests_blood', $data);
+    }
+
+    public function accept_request($id)
+    {
+        // Start transaction for data consistency
+        DB::beginTransaction();
+
+        try {
+            // 1. Find the request
+            $bloodRequest = BloodRequest::where('request_id', $id)->firstOrFail();
+            if($bloodRequest->status !== 'Pending') {
+                return response()->json(['success' => false, 'message' => 'Request already processed.']);
+            }
+
+            // 2. Deduct from admin inventory
+            $centralInventory = BloodInventory::where('blood_type', $bloodRequest->blood_type)
+                ->where('status', 'available')
+                ->first();
+
+            if(!$centralInventory || $centralInventory->volume < $bloodRequest->qty) {
+                return response()->json(['success' => false, 'message' => 'Insufficient blood units in inventory!']);
+            }
+
+            $centralInventory->volume -= $bloodRequest->qty;
+            $centralInventory->save();
+
+            // 3. Increment in hospital inventory
+            $hospitalInventory = HospitalInventory::where('hospital_id', $bloodRequest->hospital_id)
+                ->where('blood_type', $bloodRequest->blood_type)
+                ->first();
+
+            if($hospitalInventory) {
+                $hospitalInventory->qty += $bloodRequest->qty;
+                $hospitalInventory->status = 'available';
+                $hospitalInventory->save();
+            } else {
+                HospitalInventory::create([
+                    'hospital_id' => $bloodRequest->hospital_id,
+                    'blood_type' => $bloodRequest->blood_type,
+                    'qty' => $bloodRequest->qty,
+                    'status' => 'available',
+                ]);
+            }
+
+            // 4. Update request status
+            BloodRequest::where('request_id', $id)->update(['status' => 'Accepted']);
+
+
+            DB::commit();
+
+            return response()->json(['success' => true, 'message' => 'Request accepted and processed successfully!']);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Failed to process request: ' . $e->getMessage()]);
+        }
+    }
+
+    public function cancel_request($id)
+    {
+        $bloodRequest = BloodRequest::findOrFail($id);
+
+        if($bloodRequest->status !== 'Pending') {
+            return response()->json(['success' => false, 'message' => 'Request already processed.']);
+        }
+
+        $bloodRequest->status = 'Declined';
+        $bloodRequest->save();
+
+        return response()->json(['success' => true, 'message' => 'Request declined successfully.']);
+    }
+
 }

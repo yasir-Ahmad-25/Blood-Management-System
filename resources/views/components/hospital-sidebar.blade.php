@@ -11,7 +11,7 @@
         </li>
 
         <li class="nav-item">
-            <a href="#" class="nav-link text-white py-3 px-4 {{ request()->routeIs('admin.requests') ? 'active bg-white text-black' : '' }}">
+            <a href="{{ route('hospital.BloodRequests')}}" class="nav-link text-white py-3 px-4 {{ request()->routeIs('hospital.BloodRequests') ? 'active bg-white text-black' : '' }}">
                 <i class="bi bi-inbox"></i> Requests
             </a>
         </li>
