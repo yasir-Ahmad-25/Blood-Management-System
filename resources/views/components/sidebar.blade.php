@@ -15,7 +15,12 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link text-white py-3 px-4 {{ request()->routeIs('admin.inventory') ? 'active bg-white text-black' : '' }}">
+            <a href="{{ route('admin.donations')}}" class="nav-link text-white py-3 px-4 {{ request()->routeIs('admin.donations') ? 'active bg-white text-black' : '' }}">
+                <i class="bi bi-person-badge"></i> Donations
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('admin.blood_inventories')}}" class="nav-link text-white py-3 px-4 {{ request()->routeIs('admin.blood_inventories') ? 'active bg-white text-black' : '' }}">
                 <i class="bi bi-droplet"></i> Inventory
             </a>
         </li>
@@ -25,7 +30,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link text-white py-3 px-4 {{ request()->routeIs('admin.hospitals') ? 'active bg-white text-black' : '' }}">
+            <a href="{{ route('admin.hospitals')}}" class="nav-link text-white py-3 px-4 {{ request()->routeIs('admin.hospitals') ? 'active bg-white text-black' : '' }}">
                 <i class="bi bi-hospital"></i> Hospitals
             </a>
         </li>

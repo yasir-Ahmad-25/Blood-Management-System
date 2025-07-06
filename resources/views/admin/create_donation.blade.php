@@ -96,7 +96,7 @@
                             showConfirmButton: false,
                             timer: 1500
                         }).then(() => {
-                            window.location.href = "{{ route('admin.donors') }}"; 
+                            window.location.href = "{{ route('admin.donations') }}"; 
                         });
                     } else {
                         Swal.fire({

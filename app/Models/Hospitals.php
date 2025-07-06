@@ -2,9 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+class Hospitals extends Authenticatable
 
-class Hospitals extends Model
 {
-    //
+    protected $table = 'hospitals';
+
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'address',
+        'city',
+        'website',
+        'contact_person',
+        'region',
+        'username',
+        'password',
+        'status',
+    ];
 }

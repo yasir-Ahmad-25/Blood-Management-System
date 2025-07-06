@@ -2,11 +2,12 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\HospitalController;
 use Illuminate\Support\Facades\Route;
 
 // Admin Routes
 Route::middleware('custom.auth')->controller(AdminController::class)->group(function () {
-    Route::get('dashboard', 'index')->name('admin.index');
+    Route::get('/', 'index')->name('admin.index');
 
     // Donor Management Routes
     Route::get('donors', 'donors')->name('admin.donors');
@@ -18,14 +19,43 @@ Route::middleware('custom.auth')->controller(AdminController::class)->group(func
     Route::get('get_donor_blood_type', 'getDonorBloodType')->name('admin.get_donor_blood_type');
 
     // Donation Management Routes
+    Route::get('donations', 'donations')->name('admin.donations');
     Route::get('create_donation', 'createDonation')->name('admin.create_donation');
     Route::post('record_donation', 'recordDonation')->name('admin.record_donation');
+    Route::get('change_donation_status/{id}/status/{action}', 'change_donation_status')->name('admin.change_donation_status');
+
+    // Blood Inventory Management Routes
+    Route::get('blood_inventories', 'bloodInventories')->name('admin.blood_inventories');
+
+    // Hospital Management Routes
+    Route::get('hospitals', 'hospitals')->name('admin.hospitals');
+    Route::get('create_hospital', 'createHospital')->name('admin.create_hospital');
+    Route::post('record_hospital', 'recordHospital')->name('admin.record_hospital');
+    Route::get('edit_hospital/{id}', 'editHospital')->name('admin.edit_hospital');
+    Route::post('update_hospital/{id}', 'updateHospital')->name('admin.update_hospital');
+    Route::get('delete_hospital/{id}', 'deleteHospital')->name('admin.delete_hospital');
+
+
     // Add more admin routes as needed
     Route::get('logout', 'logout')->name('admin.logout');
 });
 
-// Authentication Routes
+
+Route::middleware('custom.hospital_auth')->prefix('hospital')->controller(HospitalController::class)->group(function () {
+    Route::get('logout', 'hospitalLogout')->name('hospital.logout');
+    Route::get('/', 'hospitalDashboard')->name('hospital.dashboard');
+});
+
+// Authentication Routes For Admin
 Route::middleware('custom.guest')->controller(AuthenticationController::class)->group(function () {
+    Route::get('login', 'hospitalLogin')->name('hospital.login');
+    Route::post('hospitalAuthenticate', 'hospitalAuthenticate')->name('hospital.hospitalAuthenticate');
     Route::get('login', 'login')->name('auth.login');
     Route::post('authenticate', 'authenticate')->name('auth.authenticate');
+});
+
+// Authentication Routes For Hospital
+Route::middleware('custom.hospital_guest')->prefix('hospital')->controller(HospitalController::class)->group(function () {
+    Route::get('login', 'hospitalLogin')->name('hospital.login');
+    Route::post('hospitalAuthenticate', 'hospitalAuthenticate')->name('hospital.hospitalAuthenticate');
 });

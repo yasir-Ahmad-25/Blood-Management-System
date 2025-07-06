@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'custom.auth' => App\Http\Middleware\RedirectIfNotAuthenticated::class,
             'custom.guest' => App\Http\Middleware\RedirectIfAuthenticated::class,
+
+            'custom.hospital_auth' => App\Http\Middleware\RedirectIfHospitalNotAuthenticated::class,
+            'custom.hospital_guest' => App\Http\Middleware\RedirectIfHospitalAuthenticated::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

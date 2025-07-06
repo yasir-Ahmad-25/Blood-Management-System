@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('blood_type');
             $table->integer('volume_ml'); // in ml
             $table->string('location'); // Where the donation took place
-            $table->string('status')->default('pending'); // pending, completed, rejected
+            $table->string('status')->default('collected'); // pending, completed, rejected
             $table->text('remarks');
             $table->timestamps();
         });
