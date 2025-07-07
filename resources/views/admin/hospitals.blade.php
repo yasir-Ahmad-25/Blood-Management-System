@@ -1,49 +1,51 @@
 <x-base>
     <x-slot name="title">{{ $title }}</x-slot>
-    <div class="container-fluid mt-5">
-        <h1 class="mb-4 fw-bold">Hospitals List</h1>
-        <span>This is Hospitals Page</span>
-        <a href="{{ route('admin.create_hospital')}}" class="btn btn-primary mb-3"> Create New Hospital </a>
-        <hr>
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
+
+    <div class="container-fluid mt-4 mb-5 p-5">
+        <div class="row mb-3">
+            <div class="col-12 d-flex align-items-center justify-content-between">
+                <h3 class="fw-bold" style="color:#b91c1c;">
+                    <i class="bi bi-hospital"></i> Hospitals List
+                </h3>
+                <a href="{{ route('admin.create_hospital') }}" class="btn btn-primary shadow-sm">
+                    <i class="bi bi-plus-circle"></i> Add Hospital
+                </a>
             </div>
-        @endif
-        @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
+        </div>
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <table class="table align-middle table-borderless" style="background:#fff;border-radius:10px;">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($hospitals as $hospital)
+                            <tr>
+                                <td>{{ $hospital->name }}</td>
+                                <td>{{ $hospital->email }}</td>
+                                <td>{{ $hospital->phone }}</td>
+                                <td>{{ $hospital->address }}</td>
+                                <td class="text-end">
+                                    <a href="{{ route('admin.edit_hospital', $hospital->id) }}" class="btn btn-warning btn-sm me-1">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                    <button class="btn btn-danger btn-sm btn-delete-hospital" data-hospital-id="{{ $hospital->id }}">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                {{ $hospitals->links() }}
             </div>
-        @endif
-        
-        <table id="hospitalsTable" class="display">
-            <thead>
-                <tr>
-                    <th>Hospital Name</th>
-                    <th>Address</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($hospitals as $hospital)
-                    <tr>
-                        <td>{{ $hospital->name }}</td>
-                        <td>{{ $hospital->address }}</td>
-                        <td>{{ $hospital->phone }}</td>
-                        <td>{{ $hospital->email }}</td>
-                        <td>
-                            <a href="{{ route('admin.edit_hospital', $hospital->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <a class="btn btn-danger btn-sm btn_delete">
-                                <input type="hidden" name="hospital_id" id="hospital_id" value="{{ $hospital->id }}">
-                                Delete
-                            </a>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+        </div>
     </div>
 
 
@@ -66,9 +68,8 @@
         });
     });
 
-    $('.btn_delete').on('click', function(){
-        let hospital_id = $(this).find('input[name="hospital_id"]').val();
-        console.log("the clicked hospital is: " + hospital_id);
+    $('.btn-delete-hospital').on('click', function(){
+        let hospital_id = $(this).data('hospital-id');
         
         Swal.fire({
             title: "Are you sure?",

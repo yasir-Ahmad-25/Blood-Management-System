@@ -5,7 +5,7 @@
     </div>
     <ul class="nav flex-column mt-4">
         <li class="nav-item">
-            <a href="#" class="nav-link text-white py-3 px-4 {{ request()->routeIs('admin.dashboard') ? 'active bg-white text-black' : '' }}">
+            <a href="{{ route('admin.index')}}" class="nav-link text-white py-3 px-4 {{ request()->routeIs('admin.dashboard') ? 'active bg-white text-black' : '' }}">
                 <i class="bi bi-house"></i> Dashboard
             </a>
         </li>
@@ -35,7 +35,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link text-white py-3 px-4 {{ request()->routeIs('admin.reports') ? 'active bg-white text-black' : '' }}">
+            <a href="{{ route('admin.report')}}" class="nav-link text-white py-3 px-4 {{ request()->routeIs('admin.reports') ? 'active bg-white text-black' : '' }}">
                 <i class="bi bi-bar-chart"></i> Reports
             </a>
         </li>

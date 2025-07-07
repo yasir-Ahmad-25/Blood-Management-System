@@ -1,82 +1,72 @@
 <x-base>
     <x-slot name="title">{{ $title }}</x-slot>
 
-    <div class="container-fluid mt-5">
-        <h1>Create Hospital</h1>
-        
-        <form id="create-hospital-form">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="#">Hospital Name</label>
-                        <input type="text" name="hospital_name" id="hospital_name" class="form-control" placeholder="Enter Hospital Name" value="{{ old('hospital_name') }}">
-                    </div>
-                </div>
+<div class="container-fluid mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-3 text-center" style="color:#b91c1c;">
+                        <i class="bi bi-hospital"></i> Add New Hospital
+                    </h4>
+                    @if($errors->any())
+                        <div class="alert alert-danger mb-2">
+                            {{ implode('', $errors->all(':message ')) }}
+                        </div>
+                    @endif
+                    <form id="create-hospital-form">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Hospital Name</label>
+                            <input type="text" class="form-control" name="hospital_name" id="hospital_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Hospital Email</label>
+                            <input type="email" class="form-control" name="hospital_email" id="hospital_email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="text" class="form-control" name="hospital_phone" id="hospital_phone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" name="hospital_Address" id="hospital_Address" required>
+                        </div>
 
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="#">Hospital Email</label>
-                        <input type="email" name="hospital_email" id="hospital_email" class="form-control" placeholder="Enter Email" value="{{ old('hospital_email') }}">
-                    </div>
-                </div>
+                        <div class="mb-3">
+                                <label for="#">Hospital Username</label>
+                                <input type="text" name="hospital_username" id="hospital_username" class="form-control" placeholder="Enter Hospital's Username" value="{{ old('hospital_username') }}" required>
+                        </div>
 
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="#">Hospital Phone Number </label>
-                        <input type="number" name="hospital_phone" id="hospital_phone" class="form-control" placeholder="Enter Contact Person" value="{{ old('hospital_phone') }}" required>
-                    </div>
-                </div>
+                        <div class="mb-3">
+                            <label for="#">Hospital Password</label>
+                            <input type="password" name="hospital_password" id="hospital_password" class="form-control" placeholder="Enter Hospital's Password" value="{{ old('hospital_password') }}" required>
+                        </div>
 
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="address">Hospital Address</label>
-                        <input type="text" name="hospital_Address" id="hospital_Address" class="form-control" placeholder="Enter Address" value="{{ old('hospital_Address') }}" required>
-                    </div>
-                </div>
+                        <div class="mb-3">
+                            <label for="address"> Hospital Region (optional) </label>
+                            <input type="text" name="hospital_region" id="hospital_region" class="form-control" placeholder="Enter Hospitals Region" value="{{ old('hospital_region') }}" required>
+                        </div>
 
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="#">Hospital Username</label>
-                        <input type="text" name="hospital_username" id="hospital_username" class="form-control" placeholder="Enter Hospital's Username" value="{{ old('hospital_username') }}" required>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="#">Hospital Password</label>
-                        <input type="password" name="hospital_password" id="hospital_password" class="form-control" placeholder="Enter Hospital's Password" value="{{ old('hospital_password') }}" required>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="address"> Hospital Region (optional) </label>
-                        <input type="text" name="hospital_region" id="hospital_region" class="form-control" placeholder="Enter Hospitals Region" value="{{ old('hospital_region') }}" required>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="address"> Hospital Website (optional) </label>
-                        <input type="text" name="hospital_web" id="hospital_web" class="form-control" placeholder="Enter Hospital's Website" value="{{ old('hospital_web') }}" required>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="#">Hospital Contact Person (optional) </label>
-                        <input type="number" name="contact_person" id="contact_person" class="form-control" placeholder="Enter Contact Person" value="{{ old('contact_person') }}" required>
-                    </div>
-                </div>
+                        {{-- <div class="mb-3">
+                            <label for="website" class="form-label">Website</label>
+                            <input type="text" class="form-control" name="website" id="website">
+                        </div> --}}
+                        
+                        <div class="mb-3">
+                                <label for="#">Hospital Contact Person (optional) </label>
+                                <input type="number" name="contact_person" id="contact_person" class="form-control" placeholder="Enter Contact Person" value="{{ old('contact_person') }}" required>
+                        </div>
 
 
-                <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary mt-3">Create Hospital</button>
+                        <button type="submit" class="btn btn-danger w-100 fw-bold mt-2">
+                            <i class="bi bi-check2-circle"></i> Save Hospital
+                        </button>
+                    </form>
                 </div>
-
             </div>
-        </form>
+        </div>
     </div>
+</div>
 
 
 

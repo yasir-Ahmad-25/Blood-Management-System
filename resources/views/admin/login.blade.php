@@ -1,76 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login - Blood Bank Management System</title>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap 5 CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Blood Bank Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         body {
-            background: linear-gradient(120deg, #000 60%, #fff 100%);
             min-height: 100vh;
-        }
-        .login-box {
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.13);
-            width: 450px;
-            margin: auto;
-            padding: 2.5rem 2rem;
-            position: relative;
-            /* top: 50%; */
-            /* transform: translateY(15%); */
-        }
-        .login-title {
-            font-weight: bold;
-            color: #111;
-        }
-        .form-control:focus {
-            border-color: #222;
-            box-shadow: 0 0 0 0.15rem rgba(0,0,0,0.18);
-        }
-        .btn-login {
-            background: #000;
-            color: #fff;
-            font-weight: 600;
-            border-radius: 10px;
-            transition: background .2s;
-        }
-        /* .btn-login:hover {
-            background: #111;
-            color: #fff;
-        } */
-        .login-box .logo-circle {
-            width: 58px;
-            height: 58px;
-            background: #000;
-            color: #fff;
-            border-radius: 50%;
-            margin: 0 auto 1.5rem auto;
+            background: linear-gradient(120deg, #1a1a1a 0%, #b91c1c 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.1rem;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.13);
         }
-        .login-box .forgot-link {
-            color: #000;
+        .login-card {
+            backdrop-filter: blur(6px);
+            background: rgba(255,255,255,0.96);
+            box-shadow: 0 8px 32px 0 rgba(34, 34, 34, 0.17);
+            border-radius: 28px;
+            padding: 2.5rem 2rem;
+            width: 480px;
+        }
+        .blood-icon {
+            width: 82px;
+            height: 82px;
+            display: block;
+            margin: 0 auto 1rem auto;
+            background: linear-gradient(135deg, #fff 55%, #d32f2f 100%);
+            border-radius: 50%;
+            box-shadow: 0 2px 20px #d32f2f20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.4rem;
+            animation: dropFloat 1.7s ease-in-out infinite alternate;
+        }
+        @keyframes dropFloat {
+            0% { transform: translateY(0);}
+            100% { transform: translateY(6px);}
+        }
+        .form-label {
+            font-weight: 600;
+        }
+        .form-control {
+            border-radius: 12px;
+            border: 1.5px solid #eee;
+            background: #fafbfc;
+            transition: border .15s, box-shadow .15s;
+        }
+        .form-control:focus {
+            border: 1.5px solid #b91c1c;
+            box-shadow: 0 2px 8px #b91c1c11;
+        }
+        .login-btn {
+            border-radius: 12px;
+            background: linear-gradient(120deg,#b91c1c 70%, #a20d0d 100%);
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            transition: background .22s, transform .13s;
+            box-shadow: 0 2px 10px #b91c1c20;
+        }
+        .login-btn:hover, .login-btn:focus {
+            background: linear-gradient(110deg,#a20d0d 70%, #b91c1c 100%);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .login-title {
+            font-weight: 800;
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: .5rem;
+            color: #1a1a1a;
+        }
+        .login-footer {
+            font-size: .98em;
+            text-align: center;
+            color: #575757;
+            margin-top: 2.3rem;
+        }
+        .forgot-link {
+            font-size: .98em;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+        .forgot-link:hover {
             text-decoration: underline;
-            font-size: 0.98rem;
         }
-        /* .login-box .forgot-link:hover {
-            color: #444;
-        } */
+        @media (max-width:500px) {
+            .login-card { padding: 2rem 0.8rem; min-width: 99vw; border-radius: 0; }
+        }
     </style>
 </head>
 <body>
-    <div class="container d-flex justify-content-center align-items-center min-vh-100">
-        <div class="login-box">
-            <div class="logo-circle mb-3">
-                <i class="bi bi-droplet"></i>
-            </div>
-            <h2 class="login-title text-center mb-4">Blood Bank Login</h2>
+    <div class="login-card mx-auto">
+        <span class="blood-icon mb-2">
+            <i class="bi bi-droplet-half" style="color:#b91c1c;"></i>
+        </span>
+        <div class="login-title">Blood Bank Login</div>
             @if(session('error'))
                 <div class="alert alert-danger d-flex align-items-center" role="alert">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
@@ -81,34 +109,28 @@
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-            <form method="POST" action="{{ route('auth.authenticate') }}">
+        <form method="POST" action="{{ route('auth.authenticate') }}">
                 @csrf
-                <div class="mb-3">
-                    <label for="email" class="form-label fw-semibold">Email address</label>
-                    <input type="email" class="form-control" id="email" name="email" required autocomplete="false" placeholder="Enter your email" value="{{ old('email') }}">
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label fw-semibold">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required autocomplete="false" placeholder="Enter password">
-                </div>
-                <div class="mb-3 d-flex justify-content-between align-items-center">
-                    <div>
-                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                        <label class="form-check-label" for="remember">Remember me</label>
-                    </div>
-                    <a href="#" class="forgot-link">Forgot Password?</a>
-                </div>
-                <button type="submit" class="btn btn-login w-100 mt-1 mb-3">Login</button>
-            </form>
-            <p class="text-center text-muted mb-0" style="font-size: 0.96rem;">
-                &copy; {{ date('Y') }} Blood Bank Management System
-            </p>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" required autofocus>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label d-flex justify-content-between align-items-center">
+                    <span>Password</span>
+                    {{-- <a href="#" class="forgot-link">Forgot Password?</a> --}}
+                </label>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Enter password" required>
+            </div>
+            {{-- <div class="mb-3 form-check mb-4">
+                <input type="checkbox" class="form-check-input" name="remember" id="remember">
+                <label class="form-check-label" for="remember" style="font-size:.98em;">Remember me</label>
+            </div> --}}
+            <button type="submit" class="btn login-btn w-100 mt-1 mb-1">Login</button>
+        </form>
+        <div class="login-footer">
+            &copy; {{ date('Y') }} Blood Bank Management System
         </div>
     </div>
-    <!-- Bootstrap 5 + Icons JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <!-- Animate.css for subtle fade in -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </body>
 </html>

@@ -40,8 +40,9 @@ Route::middleware('custom.auth')->controller(AdminController::class)->group(func
     Route::get('edit_hospital/{id}', 'editHospital')->name('admin.edit_hospital');
     Route::post('update_hospital/{id}', 'updateHospital')->name('admin.update_hospital');
     Route::get('delete_hospital/{id}', 'deleteHospital')->name('admin.delete_hospital');
-
-
+    
+    
+    Route::get('report', 'report')->name('admin.report');
     // Add more admin routes as needed
     Route::get('logout', 'logout')->name('admin.logout');
 });

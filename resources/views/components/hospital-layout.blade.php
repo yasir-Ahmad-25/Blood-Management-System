@@ -15,7 +15,7 @@
     <div class="d-flex" style="min-height:100vh;">
         <div class="sidebar">
             <x-hospital-sidebar />
-        </div>
+        </div> 
         <div class="flex-grow-1" style="background:#fff;">
             {{ $slot }}
         </div>

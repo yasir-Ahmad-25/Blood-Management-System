@@ -1,16 +1,29 @@
 <x-base>
     <x-slot name="title">{{ $title }}</x-slot>
 
-   <div class="container">
-        <p> Blood Requests </p>
-
-        <div class="card">
-            <div class="card-header"><h6>A+</h6></div>
-            <div class="card-body">
-                <h6> 34 </h6>
-            </div>
+   <div class="container-fluid p-5">
+        <div class="row mb-4 g-3">
+            @foreach($bloodRequestCards as $type => $count)
+                <div class="col-6 col-md-3">
+                    <div class="card text-center border-0 shadow-sm" style="border-radius:14px;">
+                        <div class="card-body p-3">
+                            <div class="fw-bold mb-1" style="color:#d32f2f;font-size:1.2rem;">
+                                <i class="bi bi-droplet-half"></i> {{ $type }}
+                            </div>
+                            <div class="display-6 fw-bold" style="color:{{ $count > 0 ? '#222' : '#b5b5b5' }};">
+                                {{ $count }}
+                            </div>
+                            <div class="text-muted" style="font-size:.92em;">Requests</div>
+                            @if($count == 0)
+                                <div class="badge bg-secondary mt-2">No requests</div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
-        
+
+        <hr>
 
         <table id="requests_table" class="display">
             <thead>

@@ -15,11 +15,41 @@ use Illuminate\Http\Request;
 class AdminController extends Controller
 {
     public function index(){
-        $data = [
-            'title' => 'Admin Dashboard',
-        ];
+        
+            // Gather data for cards
+            $total_donors = Donors::count();
+            $total_hospitals = Hospitals::count();
+            $total_blood_units = BloodInventory::sum('volume');
+            $total_requests = BloodRequest::count();
 
-        return view('admin.index',$data);
+            // Recent activities (combine requests, donations, etc.)
+            $recent_activities = collect([
+                // Example data, adapt as needed
+                [
+                    'date' => now()->format('Y-m-d'),
+                    'type' => 'Donation',
+                    'type_color' => 'danger',
+                    'details' => 'John Doe donated 1 unit of O+'
+                ],
+                [
+                    'date' => now()->format('Y-m-d'),
+                    'type' => 'Request',
+                    'type_color' => 'primary',
+                    'details' => 'Hospital XYZ requested 2 units of A-'
+                ],
+                // ...
+            ])->take(5);
+
+            $data = [
+                'title' => 'Admin Dashboard',
+                'total_donors' => $total_donors,
+                'total_hospitals' => $total_hospitals,
+                'total_blood_units' => $total_blood_units,
+                'total_requests' => $total_requests,
+                'recent_activities' => $recent_activities,
+            ];
+
+            return view('admin.index', $data);
     }
 
     public function logout(){
@@ -119,7 +149,7 @@ class AdminController extends Controller
         // check if validation passes
         $donorData = [
             'fullname' => $request->input('fullname'),
-            'email' => $request->input('Email'),
+            'email' => $request->input('email'),
             'phone' => $request->input('phone'),
             'sex' => $request->input('sex'),
             'date_of_birth' => $request->input('date_of_birth'),
@@ -148,10 +178,16 @@ class AdminController extends Controller
         $donor = Donors::findOrFail($id);
         $deleteDonor = $donor->delete();
         if( !$deleteDonor) {
-            return redirect()->back()->with('error', 'Failed to Delete donor');
+            return response()->json([
+                'success' => false, 
+                'message' => "Failed to Delete donor"
+            ]);
         }
-
-        return redirect()->back()->with('success', 'Donor deleted successfully');
+        
+        return response()->json([
+            'success' => true, 
+            'message' => "Donor deleted successfully"
+        ]);
     }
 
     public function getDonorBloodType(Request $request){
@@ -280,7 +316,7 @@ class AdminController extends Controller
         $bloodInventories = BloodInventory::join('donors', 'blood_inventories.donor_id', '=', 'donors.id')
             ->select('blood_inventories.*', 'donors.fullname as donor_fullname')
             ->orderBy('blood_inventories.blood_id', 'desc')
-            ->get();
+            ->paginate(10);
 
         // Inventory summary (count by blood type)
         $bloodSummary = BloodInventory::where('status', 'available')
@@ -321,8 +357,8 @@ class AdminController extends Controller
             'hospital_email' => 'nullable|email|max:255|unique:hospitals,email',
             'hospital_phone' => 'nullable|string|max:15|unique:hospitals,phone',
             'hospital_Address' => 'required|string|max:255',
-            'contact_person' => 'nullable|string|max:255',
-            'region' => 'nullable|string|max:255',
+            // 'contact_person' => 'nullable|string|max:255',
+            // 'region' => 'nullable|string|max:255',
             'hospital_password' => 'nullable|string|min:4', // Optional password, default will be set if not provided
         ]);
 
@@ -429,9 +465,24 @@ class AdminController extends Controller
                                         ->select('tbl_blood_requests.*','hospitals.name as Hospital_Name')
                                         ->orderBy('tbl_blood_requests.request_id','desc')
                                         ->get();
+
+        // Count requests per blood type
+        $allTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+        $bloodRequestCounts = BloodRequest::select('blood_type', \DB::raw('COUNT(*) as count'))
+            ->groupBy('blood_type')
+            ->pluck('count', 'blood_type')
+            ->toArray();
+
+        // Ensure all types are shown (even if 0)
+        $bloodRequestCards = [];
+        foreach($allTypes as $type) {
+            $bloodRequestCards[$type] = $bloodRequestCounts[$type] ?? 0;
+        }
+
         $data = [
             'title' => 'Blood Requests',
             'blood_requests' => $blood_requests,
+            'bloodRequestCards' => $bloodRequestCards,
         ];
         return view('admin.requests_blood', $data);
     }
@@ -505,5 +556,49 @@ class AdminController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Request declined successfully.']);
     }
+
+    // Report
+
+
+    public function report()
+    {
+        // Summary stats
+        $totalDonors = Donors::count();
+        $totalDonations = BloodDonations::count();
+        $totalHospitals = Hospitals::count();
+        $totalRequests = BloodRequest::count();
+        $inventoryUnits = BloodInventory::where('status', 'available')->count();
+
+        // Recent Donations (last 5)
+        $recentDonations = BloodDonations::join('donors', 'blood_donations.donor_id', '=', 'donors.id')
+            ->orderByDesc('donation_date')
+            ->take(5)
+            ->get();
+
+        // Recent Requests (last 5)
+        $recentRequests = BloodRequest::join('hospitals', 'tbl_blood_requests.hospital_id', '=', 'hospitals.id')
+            ->orderByDesc('requested_date')
+            ->take(5)
+            ->get();
+
+        // Blood type summary for low stock alert
+        $bloodSummary = BloodInventory::where('status', 'available')
+            ->select('blood_type', \DB::raw('COUNT(*) as count'))
+            ->groupBy('blood_type')
+            ->pluck('count', 'blood_type');
+
+        return view('admin.report', [
+            'title' => 'Reports',
+            'totalDonors' => $totalDonors,
+            'totalDonations' => $totalDonations,
+            'totalHospitals' => $totalHospitals,
+            'totalRequests' => $totalRequests,
+            'inventoryUnits' => $inventoryUnits,
+            'recentDonations' => $recentDonations,
+            'recentRequests' => $recentRequests,
+            'bloodSummary' => $bloodSummary,
+        ]);
+    }
+
 
 }

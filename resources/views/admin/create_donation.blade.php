@@ -1,65 +1,67 @@
 <x-base>
     <x-slot name="title">{{ $title }}</x-slot>
 
-    <div class="container-fluid mt-5">
-        <h1>Create Donation</h1>
-        
-        <form id="create-donation-form">
-            <div class="row">
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="#">Donor</label>
-                        <select name="donor" id="donor" class="form-control">
-                            <option value="#" selected disabled> Select Donor</option>
-                            @foreach($donors as $donor)
-                                <option value="{{ $donor->id }}">{{ $donor->fullname }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="#">Date Of Birth</label>
-                        <input type="date" name="donation_date" id="donation_date" class="form-control" placeholder="Enter Date of Donation" value="{{ old('donation_date') }}" required>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="#">Blood Type</label>
-                        <input type="text" name="blood_type" id="blood_type" class="form-control" placeholder="Enter Blood Type" value="{{ old('blood_type') }}" required>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="#">Volume (ml)</label>
-                        <input type="text" name="volume" id="volume" class="form-control" placeholder="Enter Volume" value="{{ old('volume') }}" required>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="#"> Donation Location </label>
-                        <input type="text" name="location" id="location" class="form-control" placeholder="Enter Location" value="{{ old('location') }}" required>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="#"> Remarks </label>
-                        <input type="text" name="remarks" id="remarks" class="form-control" placeholder="Enter Remark" value="{{ old('remarks') }}" required>
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <button type="submit" class="btn btn-primary">Make Donation</button>
+<div class="container-fluid mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-3 text-center" style="color:#b91c1c;">
+                        <i class="bi bi-droplet-half"></i> Create Donation
+                    </h4>
+                    @if($errors->any())
+                        <div class="alert alert-danger mb-2">
+                            {{ implode('', $errors->all(':message ')) }}
+                        </div>
+                    @endif
+                    <form id="create-donation-form">
+                        <div class="mb-3">
+                            <label for="donor_id" class="form-label">Donor</label>
+                            <select class="form-control" name="donor" id="donor" required>
+                                <option value="">-- Select Donor --</option>
+                                @foreach($donors as $donor)
+                                    <option value="{{ $donor->id }}" {{ old('donor_id') == $donor->id ? 'selected' : '' }}>
+                                        {{ $donor->fullname }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="donation_date" class="form-label">Donation Date</label>
+                            <input type="date" class="form-control" name="donation_date" id="donation_date" value="{{ old('donation_date') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="blood_type" class="form-label">Blood Type</label>
+                            <select class="form-control" name="blood_type" id="blood_type" required>
+                                <option value="">-- Select --</option>
+                                @foreach(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as $type)
+                                    <option value="{{ $type }}" {{ old('blood_type') == $type ? 'selected' : '' }}>
+                                        {{ $type }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="volume_ml" class="form-label">Volume (ml)</label>
+                            <input type="number" class="form-control" name="volume" id="volume" min="1" value="{{ old('volume_ml') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" name="location" id="location" value="{{ old('location') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <textarea class="form-control" name="remarks" id="remarks" rows="2">{{ old('remarks') }}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100 fw-bold mt-2">
+                            <i class="bi bi-check2-circle"></i> Save Donation
+                        </button>
+                    </form>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
+</div>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
