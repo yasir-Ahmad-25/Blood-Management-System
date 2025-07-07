@@ -1,49 +1,77 @@
 <x-hospital-layout>
     <x-slot name="title">{{ $title }}</x-slot>
 
-   <div class="container">
-        <p> Hospital Bloods </p>
-
-        <div class="card">
-            <div class="card-header"><h6>A+</h6></div>
-            <div class="card-body">
-                <h6> 34 </h6>
+   <div class="container p-5">
+            <!-- Blood Types Cards Row -->
+            <div class="row mb-4 g-3">
+                @foreach($blood_stock as $type => $qty)
+                    <div class="col-6 col-md-3">
+                        <div class="card text-center border-0 shadow-sm" style="border-radius:14px;">
+                            <div class="card-body p-3">
+                                <div class="fw-bold mb-1" style="color:#d32f2f;font-size:1.2rem;">
+                                    <i class="bi bi-droplet-half"></i> {{ $type }}
+                                </div>
+                                <div class="display-6 fw-bold" style="color:{{ $qty > 0 ? '#222' : '#b5b5b5' }};">
+                                    {{ $qty }}
+                                </div>
+                                <div class="text-muted" style="font-size:.92em;">Units Available</div>
+                                @if($qty == 0)
+                                    <div class="badge bg-secondary mt-2">Out of stock</div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
-        </div>
+            <!-- End Blood Type Cards Row -->
+
         
         <a href="{{ route('hospital.create_BloodRequest')}}" class="btn btn-primary"> Request Blood </a>
 
-        <table id="requestTable" class="display">
-            <thead>
+        
+
+        <table class="table align-middle table-borderless shadow-sm" style="background:#fff; border-radius:12px;">
+            <thead class="table-light">
                 <tr>
                     <th>Date</th>
                     <th>Blood Type</th>
                     <th>Qty</th>
                     <th>Status</th>
-                    <th>Action</th>
+                    <th class="text-end">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($bloodRequests as $request)
-                    <tr>
+                    <tr style="vertical-align:middle;">
                         <td>{{ $request->requested_date }}</td>
-                        <td>{{ $request->blood_type }}</td>
+                        <td class="fw-bold" style="color:#d32f2f;">{{ $request->blood_type }}</td>
                         <td>{{ $request->qty }}</td>
-                        <td>{{ ucfirst($request->status) }}</td>
                         <td>
-                            @if ($request->status == 'Pending')
-                                <button class="btn btn-danger btn-cancel-request" data-request-id="{{ $request->request_id }}">Cancel</button>
+                            @php
+                                $statusClass = [
+                                    'Pending' => 'bg-warning text-dark',
+                                    'Accepted' => 'bg-success',
+                                    'Declined' => 'bg-secondary'
+                                ][$request->status] ?? 'bg-light text-dark';
+                            @endphp
+                            <span class="badge {{ $statusClass }}" style="font-size:.99em;">
+                                {{ $request->status }}
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            @if($request->status == 'Pending')
+                                <button class="btn btn-outline-danger btn-sm btn-cancel-request" 
+                                        data-request-id="{{ $request->request_id }}">
+                                    <i class="bi bi-x-circle"></i> Cancel
+                                </button>
                             @else
-                                <span class="badge bg-secondary">No action</span>
-                                {{-- OR --}}
-                                <i class="bi bi-lock text-muted" title="Action not available"></i>
-                                {{-- OR --}}
-                                {{-- <span class="text-muted" style="font-size: 0.9em;">—</span> --}}
+                                <span class="badge bg-light text-muted">
+                                    <i class="bi bi-lock"></i> No action
+                                </span>
                             @endif
                         </td>
                     </tr>
                 @endforeach
-
             </tbody>
         </table>
 

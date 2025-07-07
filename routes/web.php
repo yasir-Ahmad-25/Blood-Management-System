@@ -31,6 +31,7 @@ Route::middleware('custom.auth')->controller(AdminController::class)->group(func
     Route::get('requests_blood','requests_blood')->name('admin.requests_blood');
     Route::get('accept_request/{id}','accept_request')->name('admin.accept_request');
     Route::get('cancel_request/{id}','cancel_request')->name('admin.cancel_request');
+    
 
     // Hospital Management Routes
     Route::get('hospitals', 'hospitals')->name('admin.hospitals');
@@ -56,6 +57,10 @@ Route::middleware('custom.hospital_auth')->prefix('hospital')->controller(Hospit
     Route::post('record_Bloodrequest', 'record_Bloodrequest')->name('hospital.record_Bloodrequest');
     Route::get('cancel_request/{id}', 'cancel_request')->name('hospital.cancel_request');
 
+    // Stockout Routes
+    Route::get('stockout','stockout')->name('hospital.stockout');
+    Route::get('create_stockout','create_stockout')->name('hospital.create_stockout');
+    Route::post('record_stockout','record_stockout')->name('hospital.record_stockout');
 });
 
 // Authentication Routes For Admin
