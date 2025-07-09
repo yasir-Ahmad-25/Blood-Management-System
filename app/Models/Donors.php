@@ -14,5 +14,6 @@ class Donors extends Model
         'sex',
         'date_of_birth',
         'address',
+        'password'
     ];
 }

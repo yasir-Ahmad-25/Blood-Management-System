@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\DonorController;
 use App\Http\Controllers\HospitalController;
 use Illuminate\Support\Facades\Route;
 
@@ -77,3 +78,5 @@ Route::middleware('custom.hospital_guest')->prefix('hospital')->controller(Hospi
     Route::get('login', 'hospitalLogin')->name('hospital.login');
     Route::post('hospitalAuthenticate', 'hospitalAuthenticate')->name('hospital.hospitalAuthenticate');
 });
+
+
