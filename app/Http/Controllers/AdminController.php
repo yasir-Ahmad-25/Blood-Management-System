@@ -320,9 +320,9 @@ class AdminController extends Controller
 
         // Inventory summary (count by blood type)
         $bloodSummary = BloodInventory::where('status', 'available')
-            ->select('blood_type', \DB::raw('COUNT(*) as count'))
+            ->select('blood_type', DB::raw('SUM(volume) as total_volume'))
             ->groupBy('blood_type')
-            ->pluck('count', 'blood_type');
+            ->pluck('total_volume', 'blood_type');
 
         $data = [
             'title' => 'Blood Inventories',

@@ -49,7 +49,7 @@
                         <td>
                             @if($request->status == 'Pending')
                                 <button class="btn btn-success btn-accept-request" data-request-id="{{ $request->request_id }}">Accept</button>
-                                <button class="btn btn-danger btn-decline-request" data-request-id="{{ $request->request_id }}">Decline</button>
+                                <button class="btn btn-danger btn-cancel-request" data-request-id="{{ $request->request_id }}">Decline</button>
                             @else
                                 <span class="badge bg-secondary">{{ $request->status }}</span>
                             @endif
@@ -154,7 +154,7 @@
                     success: function(response){
                         if(response.success){
                             Swal.fire({
-                                title: "Deleted!",
+                                title: "Accepted!",
                                 text: response.message || "Request Has Been Canceled Successfully",
                                 icon: "success"
                             }).then(() => {

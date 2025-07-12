@@ -2,56 +2,64 @@
 
 
     <div class="container-fluid mt-4 mb-4">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white fw-bold" style="color:#d32f2f;">
-                        <i class="bi bi-list-ul"></i> Recent Stockouts
-                    </div>
-                    <div class="card-body p-2">
-                        <table class="table align-middle table-borderless" style="background:#fff;border-radius:12px;">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Blood Type</th>
-                                    <th>Qty</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($recent_stockouts as $stockout)
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="d-flex justify-content-end mb-2">
+                <a href="{{ route('hospital.create_stockout') }}" class="btn btn-danger px-4 py-2 fw-bold rounded shadow-sm">
+                    <i class="bi bi-plus-circle"></i> Create Stockout
+                </a>
+            </div>
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white fw-bold" style="color:#d32f2f;">
+                    <i class="bi bi-list-ul"></i> Recent Stockouts
+                </div>
+                <div class="card-body p-2">
+                    <table class="table align-middle table-hover mb-0" style="background:#fff; border-radius:12px;">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Blood Type</th>
+                                <th>Qty</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recent_stockouts as $stockout)
                                 <tr>
                                     <td>
                                         <span class="badge bg-light text-dark">
                                             {{ \Carbon\Carbon::parse($stockout->created_at)->format('Y-m-d') }}
                                         </span>
                                     </td>
-                                    <td class="fw-bold" style="color:#d32f2f;">{{ $stockout->blood_type }}</td>
+                                    <td class="fw-bold" style="color:#d32f2f;">
+                                        <i class="bi bi-droplet-fill"></i> {{ $stockout->blood_type }}
+                                    </td>
                                     <td>
                                         <span class="badge bg-warning text-dark">{{ $stockout->qty }}</span>
                                     </td>
+                                    <td class="text-end">
                                         @if($stockout->status != 'out of stock')
-                                            <td>
-                                                <a href="{{ route('hospital.create_stockout')}}" class="btn btn-danger btn-stockout-blood"> Stockout </a>
-                                            </td>
+                                            <a href="{{ route('hospital.create_stockout') }}" class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-exclamation-octagon"></i> Stockout
+                                            </a>
                                         @else
-                                            <td>
-                                                <span class="badge bg-secondary">No action</span>
-                                            </td>
+                                            <span class="badge bg-secondary">No action</span>
                                         @endif
+                                    </td>
                                 </tr>
-                                @empty
+                            @empty
                                 <tr>
-                                    <td colspan="3" class="text-center text-muted">No stockouts yet.</td>
+                                    <td colspan="4" class="text-center text-muted">No stockouts yet.</td>
                                 </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
 
 
 
