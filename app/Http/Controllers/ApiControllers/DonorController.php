@@ -141,4 +141,37 @@ class DonorController extends Controller
     }
 
 
+    public function show($id)
+    {
+        $donor = \App\Models\Donors::select('id', 'fullname', 'blood_type', 'email', 'phone', 'address', 'date_of_birth', 'sex', 'created_at')->find($id);
+
+        if (!$donor) {
+            return response()->json(['success' => false, 'message' => 'Donor not found'], 404);
+        }
+
+        // Optionally fetch total and last donation
+        $totalDonations = BloodDonations::where('donor_id', $id)->count();
+        $lastDonation = BloodDonations::where('donor_id', $id)
+            ->orderByDesc('donation_date')->first();
+        $lastDonationDate = $lastDonation ? $lastDonation->donation_date : '';
+
+        return response()->json([
+            'success' => true,
+            'donor' => [
+                'id' => $donor->id,
+                'fullname' => $donor->fullname,
+                'blood_type' => $donor->blood_type,
+                'email' => $donor->email,
+                'phone' => $donor->phone,
+                'address' => $donor->address,
+                'sex' => $donor->sex,
+                'date_of_birth' => $donor->date_of_birth,
+                'member_since' => $donor->created_at ? $donor->created_at->format('Y') : '',
+                'total_donations' => $totalDonations,
+                'last_donation_date' => $lastDonationDate,
+            ]
+        ]);
+    }
+
+
 }

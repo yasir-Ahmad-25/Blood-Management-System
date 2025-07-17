@@ -14,7 +14,8 @@ Route::post('Login-donor', [DonorController::class, 'Login']);
 Route::get('donors', [DonorController::class, 'index']);
 Route::put('donors/{id}', [DonorController::class, 'update']);
 
-
+// each donor detailed page
+Route::get('donors/{id}', [DonorController::class, 'show']);
 
 // Hospital
 Route::get('hospitals', [HospitalController::class, 'index']);
