@@ -11,6 +11,9 @@ use App\Models\Hospitals;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Hash;
+
 
 class AdminController extends Controller
 {
@@ -600,5 +603,54 @@ class AdminController extends Controller
         ]);
     }
 
+
+
+    // FORGOT PASSWORD SECTION
+    public function showForgotPasswordForm()
+    {
+        return view('admin.forgot_password');
+    }
+
+    public function sendResetLink(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        // Only for admins
+        $response = Password::broker('users')->sendResetLink(
+            $request->only('email')
+        );
+
+        return $response == Password::RESET_LINK_SENT
+            ? back()->with('status', __($response))
+            : back()->withErrors(['email' => __($response)]);
+    }
+
+    public function showResetPasswordForm($token)
+    {
+        $email = request('email'); // This gets the email from the link (?email=...)
+        return view('admin.reset_password', ['token' => $token, 'email' => $email]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed',
+        ]);
+
+        $response = Password::broker('users')->reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->password = Hash::make($password);
+                $user->save();
+            }
+        );
+
+        return $response == Password::PASSWORD_RESET
+            ? redirect()->route('auth.login')->with('status', 'Password reset successfully!')
+            : back()->withErrors(['email' => [__($response)]]);
+    }
+    
 
 }

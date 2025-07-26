@@ -71,6 +71,21 @@ Route::middleware('custom.guest')->controller(AuthenticationController::class)->
     Route::post('hospitalAuthenticate', 'hospitalAuthenticate')->name('hospital.hospitalAuthenticate');
     Route::get('login', 'login')->name('auth.login');
     Route::post('authenticate', 'authenticate')->name('auth.authenticate');
+
+    // Route::get('forgot-password', [AdminController::class, 'showForgotPasswordForm'])->name('admin.forgot_password');
+    // Route::post('forgot-password', [AdminController::class, 'sendResetLink'])->name('admin.send_reset_link');
+
+    // Route::get('reset-password/{token}', [AdminController::class, 'showResetPasswordForm'])->name('password.reset');
+    // Route::post('reset-password', [AdminController::class, 'resetPassword'])->name('admin.reset_password_post');
+
+
+    Route::get('forgot-password', [AdminController::class, 'showForgotPasswordForm'])->name('admin.forgot_password');
+    Route::post('forgot-password', [AdminController::class, 'sendResetLink'])->name('admin.send_reset_link');
+
+    Route::get('reset-password/{token}', [AdminController::class, 'showResetPasswordForm'])->name('password.reset');
+    Route::post('reset-password', [AdminController::class, 'resetPassword'])->name('admin.reset_password_post');
+
+
 });
 
 // Authentication Routes For Hospital
@@ -78,5 +93,6 @@ Route::middleware('custom.hospital_guest')->prefix('hospital')->controller(Hospi
     Route::get('login', 'hospitalLogin')->name('hospital.login');
     Route::post('hospitalAuthenticate', 'hospitalAuthenticate')->name('hospital.hospitalAuthenticate');
 });
+
 
 
