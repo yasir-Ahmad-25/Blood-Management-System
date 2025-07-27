@@ -127,6 +127,9 @@
                 <label class="form-check-label" for="remember" style="font-size:.98em;">Remember me</label>
             </div> --}}
             <button type="submit" class="btn login-btn w-100 mt-1 mb-1">Login</button>
+            <div class="text-center mt-3">
+                <a href="{{ route('admin.forgot_password') }}" class="text-decoration-none forgot-link">Forgot Password?</a>
+            </div>
         </form>
         <div class="login-footer">
             &copy; {{ date('Y') }} Blood Bank Management System
