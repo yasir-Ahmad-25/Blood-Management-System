@@ -19,7 +19,7 @@ Route::middleware('custom.auth')->controller(AdminController::class)->group(func
     Route::get('delete_donor/{id}', 'deleteDonor')->name('admin.delete_donor');
     Route::get('get_donor_blood_type', 'getDonorBloodType')->name('admin.get_donor_blood_type');
 
-    // Donation Management Routes
+    // Donation Management Routes 
     Route::get('donations', 'donations')->name('admin.donations');
     Route::get('create_donation', 'createDonation')->name('admin.create_donation');
     Route::post('record_donation', 'recordDonation')->name('admin.record_donation');

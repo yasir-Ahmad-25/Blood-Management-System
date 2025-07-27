@@ -99,7 +99,7 @@ class AdminController extends Controller
         // check if validation passes
         $donorData = [
             'fullname' => $request->input('fullname'),
-            'email' => $request->input('Email'),
+            'email' => $request->input('email'),
             'phone' => $request->input('phone'),
             'sex' => $request->input('sex'),
             'date_of_birth' => $request->input('date_of_birth'),
